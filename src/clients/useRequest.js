@@ -14,14 +14,19 @@ function parseJSON(response) {
 
 function useRequest() {
   const [response, setResponse] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const handleFetchPromise = (fetchPromise) => {
+    setLoading(true);
+
     const handledPromise = new Promise((resolve, reject) => {
       fetchPromise.then(parseJSON).then((res) => {
+        setLoading(false);
         if (res.ok) {
           return resolve(res.json);
         }
-        return reject(res.json.message);
+        return reject(res.json);
       });
     });
 
@@ -29,12 +34,12 @@ function useRequest() {
       .then((res) => {
         setResponse(res);
       })
-      .catch((errorMessage) => {
-        alert(errorMessage);
+      .catch((errorResponse) => {
+        setError(errorResponse);
       });
   };
 
-  return { result: { response }, handleFetchPromise };
+  return { requestState: { response, loading, error }, handleFetchPromise };
 }
 
 export default useRequest;

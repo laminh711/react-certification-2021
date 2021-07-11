@@ -1,6 +1,8 @@
 import React from 'react';
-import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import { HashRouter, Route, Switch } from 'react-router-dom';
+import AuthenticatedPage from '../../pages/AuthenticatedPage';
 import FavouritePage from '../../pages/Favourite';
+import FavouriteDetailsPage from '../../pages/FavouriteDetails/FavouriteDetails';
 import HomePage from '../../pages/Home';
 import LoginPage from '../../pages/Login';
 import VideoDetailsPage from '../../pages/VideoDetails';
@@ -8,7 +10,7 @@ import Layout from '../Layout';
 
 function App() {
   return (
-    <BrowserRouter>
+    <HashRouter>
       <Layout>
         <Switch>
           <Route exact path="/">
@@ -21,14 +23,18 @@ function App() {
             <LoginPage />
           </Route>
           <Route exact path="/favourite">
-            <FavouritePage />
+            <AuthenticatedPage>
+              <FavouritePage />
+            </AuthenticatedPage>
           </Route>
           <Route exact path="/favourite/:videoId">
-            {/* <FavouritePage /> */}
+            <AuthenticatedPage>
+              <FavouriteDetailsPage />
+            </AuthenticatedPage>
           </Route>
         </Switch>
       </Layout>
-    </BrowserRouter>
+    </HashRouter>
   );
 }
 

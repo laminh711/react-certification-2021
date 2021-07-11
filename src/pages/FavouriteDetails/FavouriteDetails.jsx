@@ -1,16 +1,14 @@
 import React from 'react';
 import { useParams } from 'react-router';
 import VideoDetailsFavouriteView from '../../components/VideoDetailsFavouriteView';
-import { StyledFavouriteDetailsPage, ContentWrapper } from './FavouriteDetails.styled';
+import GeneralPage from '../GeneralPage';
 
 function FavouriteDetailsPage() {
   const { videoId } = useParams();
   return (
-    <StyledFavouriteDetailsPage>
-      <ContentWrapper>
-        <VideoDetailsFavouriteView videoId={videoId} />
-      </ContentWrapper>
-    </StyledFavouriteDetailsPage>
+    <GeneralPage title="Favourite Video Details">
+      <VideoDetailsFavouriteView videoId={videoId} />
+    </GeneralPage>
   );
 }
 

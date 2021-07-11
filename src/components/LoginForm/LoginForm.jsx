@@ -10,13 +10,14 @@ import Button from '../Button';
 import { GlobalContext } from '../../contexts/GlobalContextProvider';
 import useRequest from '../../clients/useRequest';
 import loginApi from '../../clients/login-api';
+import { notEmpty } from '../../utils/typeHelper';
 
 export default function LoginForm() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [, dispatch] = useContext(GlobalContext);
 
-  const { result, handleFetchPromise } = useRequest();
+  const { requestState, handleFetchPromise } = useRequest();
 
   const onSubmit = (e) => {
     e.preventDefault();
@@ -24,11 +25,10 @@ export default function LoginForm() {
   };
 
   useEffect(() => {
-    if (result.response != null) {
-      dispatch({ type: 'setLoggedInUser', payload: result.response });
-      console.log(result.response);
+    if (!requestState.loading && !notEmpty(requestState.error)) {
+      dispatch({ type: 'setLoggedInUser', payload: requestState.response });
     }
-  }, [result.response]);
+  }, [requestState.response]);
 
   const onChangeUsername = (e) => {
     setUsername(e.target.value);

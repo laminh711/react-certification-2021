@@ -3,6 +3,7 @@ import React, { useContext, useRef, useState } from 'react';
 import { GlobalContext } from '../../contexts/GlobalContextProvider';
 import { ThemeContext } from '../../contexts/StyledThemeProvider';
 import useOnClickOutside from '../../hooks/useOnClickOutside';
+import { notEmpty } from '../../utils/typeHelper';
 import IconButton from '../IconButton';
 import ToggleSwitch from '../ToggleSwitch';
 import {
@@ -35,13 +36,13 @@ export default function HeaderPopMenu() {
     globalDispatch({ type: 'logout' });
   };
 
-  const { id, avatarUrl } = globalState.user;
-  const isLoggedIn = id !== '';
+  const { user } = globalState;
+  const isLoggedIn = notEmpty(user);
 
   return (
     <HeaderPopMenuWrapper ref={ref}>
       {!isLoggedIn && <IconButton svgIcon={faUser} onClick={onClickIconButton} />}
-      {isLoggedIn && <UserAvatar src={avatarUrl} onClick={onClickAvatar} />}
+      {isLoggedIn && <UserAvatar src={user.avatarUrl} onClick={onClickAvatar} />}
       {show && (
         <PopMenu>
           <PopMenuItem>

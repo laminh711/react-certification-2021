@@ -1,3 +1,5 @@
+import { standadizeSearchResult } from '../utils/youtubeDataHelper';
+
 const YoutubeVideosMock = {
   kind: 'youtube#searchListResponse',
   etag: 'LRviZfd_p3HDDD2uBk5Qv7zaEQU',
@@ -847,4 +849,7 @@ const YoutubeVideosMock = {
     },
   ],
 };
+
+export const VideosMock = standadizeSearchResult(YoutubeVideosMock);
+
 export default YoutubeVideosMock;

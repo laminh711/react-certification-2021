@@ -1,6 +1,7 @@
 import React, { useContext, useRef } from 'react';
 import { GlobalContext } from '../../contexts/GlobalContextProvider';
 import useOnClickOutside from '../../hooks/useOnClickOutside';
+import { notEmpty } from '../../utils/typeHelper';
 import {
   StyledSideMenu,
   SideMenuOverlay,
@@ -10,7 +11,7 @@ import {
 
 export default function SideMenu() {
   const [globalState, dispatch] = useContext(GlobalContext);
-  const isLoggedIn = globalState.user.id !== '';
+  const isLoggedIn = notEmpty(globalState.user);
   const { isSideMenuOpen } = globalState;
 
   const ref = useRef();

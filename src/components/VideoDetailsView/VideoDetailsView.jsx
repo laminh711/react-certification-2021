@@ -18,7 +18,9 @@ function VideoDetailsView({
   videoTitle,
   videoDescription,
   relatedVideos,
+  prefixVideoLink,
   isFavourite,
+  isLoggedIn,
   onClickRemoveFromFavourite,
   onClickAddToFavourite,
 }) {
@@ -34,18 +36,25 @@ function VideoDetailsView({
         />
         <VideoTitleSection>
           <VideoTitle>{videoTitle}</VideoTitle>
-          <AddToFavourite>
-            {isFavourite ? (
-              <Button onClick={onClickRemoveFromFavourite}>Remove from favourite</Button>
-            ) : (
-              <Button onClick={onClickAddToFavourite}>Add to favourite</Button>
-            )}
-          </AddToFavourite>
+          {isLoggedIn && (
+            <AddToFavourite>
+              {isFavourite ? (
+                <Button onClick={onClickRemoveFromFavourite}>
+                  Remove from favourite
+                </Button>
+              ) : (
+                <Button onClick={onClickAddToFavourite}>Add to favourite</Button>
+              )}
+            </AddToFavourite>
+          )}
         </VideoTitleSection>
         <VideoDescription>{videoDescription}</VideoDescription>
       </VideoSection>
       <RelatedVideoSection>
-        <RelatedVideoFeed relatedVideos={relatedVideos} />
+        <RelatedVideoFeed
+          relatedVideos={relatedVideos}
+          prefixVideoLink={prefixVideoLink}
+        />
       </RelatedVideoSection>
     </Wrapper>
   );

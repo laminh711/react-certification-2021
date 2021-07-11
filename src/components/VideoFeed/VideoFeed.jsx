@@ -7,13 +7,13 @@ export default function VideoFeed({ videoList, prefixVideoLink }) {
     <VideoFeedContainer>
       {videoList &&
         videoList.map((item) => (
-          <VideoFeedItemWrapper key={item.snippet.thumbnails.high.url}>
+          <VideoFeedItemWrapper key={item.thumbnail}>
             <VideoCard
-              videoId={item.id.videoId}
-              leadTo={`/${prefixVideoLink}/${item.id.videoId}`}
-              thumbnail={item.snippet.thumbnails.high.url}
-              title={item.snippet.title}
-              description={item.snippet.description}
+              videoId={item.videoId}
+              leadTo={`/${prefixVideoLink}/${item.videoId}`}
+              thumbnail={item.thumbnail}
+              title={item.title}
+              description={item.description}
             />
           </VideoFeedItemWrapper>
         ))}

@@ -22,7 +22,7 @@ export const PopMenuItem = styled.div`
   display: flex;
   justify-content: flex-start;
   ${(props) =>
-    props.isPointer &&
+    props.pointer &&
     css`
       cursor: pointer;
       &:hover {

@@ -1,20 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext } from 'react';
 import VideoFeed from '../../components/VideoFeed';
-import { lsGetFavouriteList } from '../../utils/localStorageHelper';
-import { ContentWrapper, StyledFavouritePage } from './Favourite.styled';
+import { GlobalContext } from '../../contexts/GlobalContextProvider';
+import GeneralPage from '../GeneralPage';
 
 function FavouritePage() {
-  const [favouriteVideos, setFavouriteVideos] = useState([]);
-  useEffect(() => {
-    const favs = lsGetFavouriteList();
-    setFavouriteVideos(favs);
-  }, []);
+  const [globalState] = useContext(GlobalContext);
   return (
-    <StyledFavouritePage>
-      <ContentWrapper>
-        <VideoFeed videoList={favouriteVideos} prefixVideoLink="favourite" />
-      </ContentWrapper>
-    </StyledFavouritePage>
+    <GeneralPage title="Your Favourite Videos">
+      <VideoFeed videoList={globalState.favourites} prefixVideoLink="favourite" />
+    </GeneralPage>
   );
 }
 

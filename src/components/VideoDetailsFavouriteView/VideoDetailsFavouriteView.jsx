@@ -1,51 +1,55 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useState } from 'react';
-import {
-  lsAddToFavourite,
-  lsCheckIfFavourite,
-  lsGetFavourite,
-  lsGetFavouriteList,
-  lsRemoveFromFavourite,
-} from '../../utils/localStorageHelper';
+import React, { useContext, useEffect, useState } from 'react';
+import { GlobalContext } from '../../contexts/GlobalContextProvider';
+import { notEmpty } from '../../utils/typeHelper';
+import AnnounceText from '../AnnounceText';
 import VideoDetailsView from '../VideoDetailsView/VideoDetailsView';
 
 export default function VideoDetailsFavouriteView(props) {
   const { videoId } = props;
-  const [relatedVideos, setRelatedVideos] = useState([]);
 
-  const [video, setVideo] = useState(null);
-
-  const [isFavourite, setIsFavourite] = useState(false);
+  const [globalState, globalDispatch] = useContext(GlobalContext);
+  const [videoInfo, setVideoInfo] = useState(null);
+  const [restOfFavouriteVideos, setRestOfFavouriteVideos] = useState([]);
 
   useEffect(() => {
-    setIsFavourite(lsCheckIfFavourite());
-    const favourite = lsGetFavourite(videoId);
-    setVideo(favourite);
+    const favouriteVideo = globalState.favourites.find(
+      (video) => video.videoId === videoId
+    );
+    setVideoInfo(favouriteVideo);
+    const theOthers = globalState.favourites.filter((video) => video.videoId !== videoId);
+    setRestOfFavouriteVideos(theOthers);
+  }, [videoId]);
 
-    const favouriteList = lsGetFavouriteList();
-    setRelatedVideos(favouriteList.filter((item) => item.id.videoId !== videoId));
-  }, []);
+  const isLoggedIn = notEmpty(globalState.user);
+
+  const isFavourite =
+    globalState.favourites.findIndex((v) => v.videoId === videoId) !== -1;
 
   const onClickRemoveFromFavourite = () => {
-    lsRemoveFromFavourite(videoId);
+    globalDispatch({ type: 'removeFromFavourites', payload: videoId });
   };
 
   const onClickAddToFavourite = () => {
-    lsAddToFavourite(video);
+    globalDispatch({ type: 'addToFavourites', payload: videoInfo });
   };
 
   return (
     <>
-      {video && (
+      {notEmpty(videoInfo) ? (
         <VideoDetailsView
           videoId={videoId}
-          videoTitle={video.snippet.title}
-          videoDescription={video.snippet.description}
-          relatedVideos={relatedVideos}
+          videoTitle={videoInfo.title}
+          videoDescription={videoInfo.description}
+          relatedVideos={restOfFavouriteVideos}
+          prefixVideoLink="favourite"
+          isLoggedIn={isLoggedIn}
           isFavourite={isFavourite}
           onClickRemoveFromFavourite={onClickRemoveFromFavourite}
           onClickAddToFavourite={onClickAddToFavourite}
         />
+      ) : (
+        <AnnounceText>Favourite video not found</AnnounceText>
       )}
     </>
   );

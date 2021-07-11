@@ -1,25 +1,28 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import useRequest from '../../clients/useRequest';
 import {
   youtubeApiGetSpecificVideo,
   youtubeApiSearchRelated,
 } from '../../clients/youtube-api';
+import { GlobalContext } from '../../contexts/GlobalContextProvider';
+import { notEmpty } from '../../utils/typeHelper';
 import {
-  lsAddToFavourite,
-  lsCheckIfFavourite,
-  lsRemoveFromFavourite,
-} from '../../utils/localStorageHelper';
+  standadizeRelatedVideos,
+  standadizeSingleVideo,
+} from '../../utils/youtubeDataHelper';
+import AnnounceText from '../AnnounceText';
 import VideoDetailsView from '../VideoDetailsView';
 
 export default function VideoDetailsRegularView(props) {
   const { videoId } = props;
 
-  const [videoTitle, setVideoTitle] = useState('');
-  const [videoDescription, setVideoDescription] = useState('');
+  const [videoInfo, setVideoInfo] = useState(null);
   const [relatedVideos, setRelatedVideos] = useState([]);
 
-  const [isFavourite, setIsFavourite] = useState(false);
+  const [globalState, globalDispatch] = useContext(GlobalContext);
+
+  const isLoggedIn = notEmpty(globalState.user);
 
   const getSpecificVideoRequest = useRequest();
   const searchRelatedRequest = useRequest();
@@ -30,43 +33,49 @@ export default function VideoDetailsRegularView(props) {
   }, [videoId]);
 
   useEffect(() => {
-    const { result } = getSpecificVideoRequest;
-    if (result.response !== null) {
-      setVideoTitle(result.response.items[0].snippet.title);
-      setVideoDescription(result.response.items[0].snippet.description);
+    const { requestState } = getSpecificVideoRequest;
+    if (!requestState.loading && !notEmpty(requestState.error)) {
+      const standadizedInfo = standadizeSingleVideo(requestState.response);
+      setVideoInfo(standadizedInfo);
     }
-  }, [getSpecificVideoRequest.result.response]);
+  }, [getSpecificVideoRequest.requestState.response]);
 
   useEffect(() => {
-    const { result } = searchRelatedRequest;
-    if (result.response !== null) {
-      setRelatedVideos(result.response.items);
+    const { requestState } = searchRelatedRequest;
+    if (!requestState.loading && !notEmpty(requestState.error)) {
+      const standadizedRelatedVideos = standadizeRelatedVideos(requestState.response);
+      setRelatedVideos(standadizedRelatedVideos);
     }
-  }, [searchRelatedRequest.result.response]);
+  }, [searchRelatedRequest.requestState.response]);
 
-  useEffect(() => {
-    setIsFavourite(lsCheckIfFavourite());
-  }, []);
+  const isFavourite =
+    globalState.favourites.findIndex((v) => v.videoId === videoId) !== -1;
 
   const onClickRemoveFromFavourite = () => {
-    lsRemoveFromFavourite(videoId);
-    setIsFavourite(false);
+    globalDispatch({ type: 'removeFromFavourites', payload: videoId });
   };
 
   const onClickAddToFavourite = () => {
-    lsAddToFavourite(getSpecificVideoRequest.result.response.items[0]);
-    setIsFavourite(true);
+    globalDispatch({ type: 'addToFavourites', payload: videoInfo });
   };
 
   return (
-    <VideoDetailsView
-      videoId={videoId}
-      videoTitle={videoTitle}
-      videoDescription={videoDescription}
-      relatedVideos={relatedVideos}
-      isFavourite={isFavourite}
-      onClickRemoveFromFavourite={onClickRemoveFromFavourite}
-      onClickAddToFavourite={onClickAddToFavourite}
-    />
+    <>
+      {notEmpty(videoInfo) ? (
+        <VideoDetailsView
+          videoId={videoId}
+          videoTitle={videoInfo.title}
+          videoDescription={videoInfo.description}
+          relatedVideos={relatedVideos}
+          prefixVideoLink="video"
+          isLoggedIn={isLoggedIn}
+          isFavourite={isFavourite}
+          onClickRemoveFromFavourite={onClickRemoveFromFavourite}
+          onClickAddToFavourite={onClickAddToFavourite}
+        />
+      ) : (
+        <AnnounceText>The video is unavailable</AnnounceText>
+      )}
+    </>
   );
 }
