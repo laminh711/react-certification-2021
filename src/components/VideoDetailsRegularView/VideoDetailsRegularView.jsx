@@ -30,6 +30,11 @@ export default function VideoDetailsRegularView(props) {
   useEffect(() => {
     getSpecificVideoRequest.handleFetchPromise(youtubeApiGetSpecificVideo(videoId));
     searchRelatedRequest.handleFetchPromise(youtubeApiSearchRelated(videoId));
+  }, []);
+
+  useEffect(() => {
+    getSpecificVideoRequest.handleFetchPromise(youtubeApiGetSpecificVideo(videoId));
+    searchRelatedRequest.handleFetchPromise(youtubeApiSearchRelated(videoId));
   }, [videoId]);
 
   useEffect(() => {
