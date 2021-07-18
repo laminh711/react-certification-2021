@@ -1,10 +1,16 @@
 import React, { createContext, useReducer } from 'react';
-import YoutubeVideosMock from '../mocks/youtube-videos-mock';
+import { VideosMock } from '../mocks/youtube-videos-mock';
 import { GlobalReducer } from '../reducers/GlobalReducer';
+import { lsGetFavouriteList, lsGetUser } from '../utils/localStorageHelper';
 
+const initUser = lsGetUser();
 const initialState = {
   searchString: 'wizeline',
-  searchResult: YoutubeVideosMock.items,
+  searchResult: VideosMock,
+  user: initUser,
+  isSideMenuOpen: false,
+  favourites: lsGetFavouriteList(),
+  searching: false,
 };
 const GlobalContext = createContext(initialState);
 

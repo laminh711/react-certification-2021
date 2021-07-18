@@ -1,23 +1,22 @@
-import React, { useContext } from 'react';
-import { GlobalContext } from '../../contexts/GlobalContextProvider';
+import React from 'react';
 import VideoCard from '../VideoCard';
 import { VideoFeedContainer, VideoFeedItemWrapper } from './VideoFeed.styled';
 
-export default function VideoFeed() {
-  const [globalState] = useContext(GlobalContext);
-  const { searchResult } = globalState;
+export default function VideoFeed({ videoList, prefixVideoLink }) {
   return (
     <VideoFeedContainer>
-      {searchResult.map((item) => (
-        <VideoFeedItemWrapper key={item.snippet.thumbnails.high.url}>
-          <VideoCard
-            videoId={item.id.videoId}
-            thumbnail={item.snippet.thumbnails.high.url}
-            title={item.snippet.title}
-            description={item.snippet.description}
-          />
-        </VideoFeedItemWrapper>
-      ))}
+      {videoList &&
+        videoList.map((item) => (
+          <VideoFeedItemWrapper key={item.thumbnail}>
+            <VideoCard
+              videoId={item.videoId}
+              leadTo={`/${prefixVideoLink}/${item.videoId}`}
+              thumbnail={item.thumbnail}
+              title={item.title}
+              description={item.description}
+            />
+          </VideoFeedItemWrapper>
+        ))}
     </VideoFeedContainer>
   );
 }

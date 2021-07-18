@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import breakpoints from '../../configs/breakpoints';
+import Button from '../Button';
 
 export const StyledHeader = styled.div`
   position: sticky;
@@ -22,17 +22,8 @@ export const HeaderContainer = styled.div`
   }
 `;
 
-export const HideOnMobileHeaderContainer = styled(HeaderContainer)`
-  display: none;
-  @media (min-width: ${breakpoints.sm}) {
-    display: flex;
-  }
-  @media (min-width: ${breakpoints.md}) {
-    display: flex;
-  }
-  @media (min-width: ${breakpoints.lg}) {
-    display: flex;
-  }
+export const RightSideHeaderContainer = styled(HeaderContainer)`
+  justify-content: flex-end;
 `;
 
 export const HeaderText = styled.h2`
@@ -41,4 +32,10 @@ export const HeaderText = styled.h2`
   padding: 0;
   color: ${(props) => props.theme.text};
   font-size: 1rem;
+`;
+
+export const TransparentButton = styled(Button)`
+  background-color: transparent;
+  text-decoration: none;
+  color: ${(props) => props.theme.text};
 `;

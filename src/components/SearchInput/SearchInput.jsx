@@ -2,16 +2,18 @@
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
 import React, { useContext, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
-import { GlobalContext } from '../../contexts/GlobalContextProvider';
-import { SearchInputContainer, SearchInputIconButton } from './SearchInput.styled';
 import useRequest from '../../clients/useRequest';
 import { youtubeApiSearch } from '../../clients/youtube-api';
+import { GlobalContext } from '../../contexts/GlobalContextProvider';
+import { notEmpty } from '../../utils/typeHelper';
+import { standadizeSearchResult } from '../../utils/youtubeDataHelper';
+import { SearchInputContainer, SearchInputIconButton } from './SearchInput.styled';
 
 function SearchInput() {
   const [globalState, dispatch] = useContext(GlobalContext);
   const { searchString } = globalState;
   const history = useHistory();
-  const { result, handleFetchPromise } = useRequest();
+  const { requestState, handleFetchPromise } = useRequest();
 
   const onInputChange = (e) => {
     dispatch({ type: 'setSearchString', payload: e.target.value });
@@ -19,14 +21,18 @@ function SearchInput() {
 
   const getSearchResult = (newSearchString) => {
     handleFetchPromise(youtubeApiSearch(newSearchString));
+    dispatch({ type: 'setSearching' });
   };
 
   useEffect(() => {
-    if (result.response != null) {
-      const { items } = result.response;
-      dispatch({ type: 'setSearchResult', payload: items });
+    if (!requestState.loading) {
+      dispatch({ type: 'unsetSearching' });
+      if (!notEmpty(requestState.error)) {
+        const standadizedSearchResult = standadizeSearchResult(requestState.response);
+        dispatch({ type: 'setSearchResult', payload: standadizedSearchResult });
+      }
     }
-  }, [result.response]);
+  }, [requestState.response]);
 
   const onSearchInputSubmit = (e) => {
     e.preventDefault();

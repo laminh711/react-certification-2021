@@ -1,14 +1,20 @@
-import React from 'react';
+import React, { useContext } from 'react';
+import Loading from '../../components/Loading';
 import VideoFeed from '../../components/VideoFeed';
-import { ContentWrapper, StyledHomePage } from './Home.styled';
+import { GlobalContext } from '../../contexts/GlobalContextProvider';
+import GeneralPage from '../GeneralPage';
 
 function HomePage() {
+  const [globalState] = useContext(GlobalContext);
+  const { searching, searchResult } = globalState;
   return (
-    <StyledHomePage>
-      <ContentWrapper>
-        <VideoFeed />
-      </ContentWrapper>
-    </StyledHomePage>
+    <GeneralPage title="Home Page">
+      {searching ? (
+        <Loading />
+      ) : (
+        <VideoFeed videoList={searchResult} prefixVideoLink="video" />
+      )}
+    </GeneralPage>
   );
 }
 

@@ -1,5 +1,11 @@
 import React from 'react';
-import { Slider, Switch } from './ToggleSwitch.styled';
+import {
+  Slider,
+  Switch,
+  StyledToggleSwitch,
+  ToggleSwitchLabel,
+  SwitchWrapper,
+} from './ToggleSwitch.styled';
 
 function ToggleSwitch(props) {
   const { toggled, onToggleCallback } = props;
@@ -7,9 +13,16 @@ function ToggleSwitch(props) {
     onToggleCallback();
   };
   return (
-    <Switch onClick={onToggle} toggled={toggled}>
-      <Slider toggled={toggled} />
-    </Switch>
+    <StyledToggleSwitch>
+      {props.label && props.label !== '' && (
+        <ToggleSwitchLabel>{props.label}</ToggleSwitchLabel>
+      )}
+      <SwitchWrapper>
+        <Switch onClick={onToggle} toggled={toggled}>
+          <Slider toggled={toggled} />
+        </Switch>
+      </SwitchWrapper>
+    </StyledToggleSwitch>
   );
 }
 

@@ -1,32 +1,25 @@
-import { faBars, faUserCircle } from '@fortawesome/free-solid-svg-icons';
+import { faBars } from '@fortawesome/free-solid-svg-icons';
 import React, { useContext } from 'react';
-import { ThemeContext } from '../../contexts/StyledThemeProvider';
+import { GlobalContext } from '../../contexts/GlobalContextProvider';
+import HeaderPopMenu from '../HeaderPopMenu';
 import IconButton from '../IconButton';
 import SearchInput from '../SearchInput';
-import ToggleSwitch from '../ToggleSwitch';
-import {
-  HeaderContainer,
-  HeaderText,
-  HideOnMobileHeaderContainer,
-  StyledHeader,
-} from './Header.styled';
+import { HeaderContainer, StyledHeader } from './Header.styled';
 
 function Header() {
-  const [themeState, dispatch] = useContext(ThemeContext);
+  const [, globalDispatch] = useContext(GlobalContext);
+  const onClickSideMenuTrigger = () => {
+    globalDispatch({ type: 'openSideMenu' });
+  };
   return (
     <StyledHeader>
       <HeaderContainer>
-        <IconButton type="submit" svgIcon={faBars} />
+        <IconButton svgIcon={faBars} onClick={onClickSideMenuTrigger} />
         <SearchInput />
       </HeaderContainer>
-      <HideOnMobileHeaderContainer>
-        <ToggleSwitch
-          toggled={themeState.theme.name === 'dark'}
-          onToggleCallback={() => dispatch({ type: 'toggle' })}
-        />
-        <HeaderText>Dark Mode</HeaderText>
-        <IconButton fontSize="1.5rem" svgIcon={faUserCircle} />
-      </HideOnMobileHeaderContainer>
+      <HeaderContainer>
+        <HeaderPopMenu />
+      </HeaderContainer>
     </StyledHeader>
   );
 }

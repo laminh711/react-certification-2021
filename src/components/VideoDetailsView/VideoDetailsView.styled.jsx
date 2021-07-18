@@ -23,9 +23,25 @@ export const VideoPlayer = styled.iframe`
   min-height: 512px;
 `;
 
+export const VideoTitleSection = styled.div`
+  display: flex;
+  justify-content: space-between;
+`;
+
+export const AddToFavourite = styled.div`
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  max-width: 30%;
+  flex: 30%;
+`;
+
 export const VideoTitle = styled.h2`
   color: ${(props) => props.theme.text};
+  max-width: 70%;
+  flex: 70%;
 `;
+
 export const VideoDescription = styled.p`
   color: ${(props) => props.theme.text};
   text-align: justify;

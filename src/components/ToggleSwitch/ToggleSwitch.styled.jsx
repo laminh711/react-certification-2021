@@ -1,5 +1,22 @@
 import styled from 'styled-components';
 
+export const StyledToggleSwitch = styled.div`
+  display: flex;
+  justify-content: flex-start;
+  align-content: center;
+`;
+
+export const ToggleSwitchLabel = styled.div`
+  color: ${(props) => props.theme.text};
+  margin-right: 16px;
+`;
+
+export const SwitchWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+`;
+
 export const Switch = styled.div`
   width: 32px;
   height: 16px;

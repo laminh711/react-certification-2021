@@ -1,49 +1,29 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useState } from 'react';
-import {
-  youtubeApiGetSpecificVideo,
-  youtubeApiSearchRelated,
-} from '../../clients/youtube-api';
+import React from 'react';
+import Button from '../Button';
 import RelatedVideoFeed from '../RelatedVideoFeed';
 import {
+  AddToFavourite,
   RelatedVideoSection,
   VideoDescription,
   VideoPlayer,
   VideoSection,
   VideoTitle,
+  VideoTitleSection,
   Wrapper,
 } from './VideoDetailsView.styled';
-import useRequest from '../../clients/useRequest';
 
-export default function VideoDetailsView(props) {
-  const { videoId } = props;
-  const [videoTitle, setVideoTitle] = useState('');
-  const [videoDescription, setVideoDescription] = useState('');
-  const [relatedVideos, setRelatedVideos] = useState([]);
-
-  const getSpecificVideoRequest = useRequest();
-  const searchRelatedRequest = useRequest();
-
-  useEffect(() => {
-    getSpecificVideoRequest.handleFetchPromise(youtubeApiGetSpecificVideo(videoId));
-    searchRelatedRequest.handleFetchPromise(youtubeApiSearchRelated(videoId));
-  }, [videoId]);
-
-  useEffect(() => {
-    const { result } = getSpecificVideoRequest;
-    if (result.response !== null) {
-      setVideoTitle(result.response.items[0].snippet.title);
-      setVideoDescription(result.response.items[0].snippet.description);
-    }
-  }, [getSpecificVideoRequest.result.response]);
-
-  useEffect(() => {
-    const { result } = searchRelatedRequest;
-    if (result.response !== null) {
-      setRelatedVideos(result.response.items);
-    }
-  }, [searchRelatedRequest.result.response]);
-
+function VideoDetailsView({
+  videoId,
+  videoTitle,
+  videoDescription,
+  relatedVideos,
+  prefixVideoLink,
+  isFavourite,
+  isLoggedIn,
+  onClickRemoveFromFavourite,
+  onClickAddToFavourite,
+}) {
   return (
     <Wrapper>
       <VideoSection>
@@ -54,12 +34,29 @@ export default function VideoDetailsView(props) {
           allowFullScreen
           title="Embedded youtube"
         />
-        <VideoTitle>{videoTitle}</VideoTitle>
+        <VideoTitleSection>
+          <VideoTitle>{videoTitle}</VideoTitle>
+          {isLoggedIn && (
+            <AddToFavourite>
+              {isFavourite ? (
+                <Button onClick={onClickRemoveFromFavourite}>
+                  Remove from favourite
+                </Button>
+              ) : (
+                <Button onClick={onClickAddToFavourite}>Add to favourite</Button>
+              )}
+            </AddToFavourite>
+          )}
+        </VideoTitleSection>
         <VideoDescription>{videoDescription}</VideoDescription>
       </VideoSection>
       <RelatedVideoSection>
-        <RelatedVideoFeed relatedVideos={relatedVideos} />
+        <RelatedVideoFeed
+          relatedVideos={relatedVideos}
+          prefixVideoLink={prefixVideoLink}
+        />
       </RelatedVideoSection>
     </Wrapper>
   );
 }
+export default VideoDetailsView;
