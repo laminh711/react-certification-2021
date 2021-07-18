@@ -19,6 +19,7 @@ function useRequest() {
 
   const handleFetchPromise = (fetchPromise) => {
     setLoading(true);
+    setError(null);
 
     const handledPromise = new Promise((resolve, reject) => {
       fetchPromise.then(parseJSON).then((res) => {
