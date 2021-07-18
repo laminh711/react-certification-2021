@@ -21,12 +21,16 @@ function SearchInput() {
 
   const getSearchResult = (newSearchString) => {
     handleFetchPromise(youtubeApiSearch(newSearchString));
+    dispatch({ type: 'setSearching' });
   };
 
   useEffect(() => {
-    if (!requestState.loading && !notEmpty(requestState.error)) {
-      const standadizedSearchResult = standadizeSearchResult(requestState.response);
-      dispatch({ type: 'setSearchResult', payload: standadizedSearchResult });
+    if (!requestState.loading) {
+      dispatch({ type: 'unsetSearching' });
+      if (!notEmpty(requestState.error)) {
+        const standadizedSearchResult = standadizeSearchResult(requestState.response);
+        dispatch({ type: 'setSearchResult', payload: standadizedSearchResult });
+      }
     }
   }, [requestState.response]);
 

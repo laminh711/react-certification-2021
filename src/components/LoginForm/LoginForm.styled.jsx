@@ -36,3 +36,14 @@ export const LoginFormActionSection = styled.div`
     flex-direction: row;
   }
 `;
+
+export const LoginFormError = styled.div`
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+`;
+
+export const LoginFormErrorText = styled.p`
+  color: ${(props) => props.theme.errText};
+  text-align: end;
+`;

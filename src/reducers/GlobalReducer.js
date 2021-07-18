@@ -16,12 +16,17 @@ const initialState = {
   user: initUser,
   isSideMenuOpen: false,
   favourites: lsGetFavouriteList(),
+  searching: false,
 };
 
 export function GlobalReducer(state = initialState, action) {
   switch (action.type) {
     case 'setSearchString':
       return { ...state, searchString: action.payload };
+    case 'setSearching':
+      return { ...state, searching: true };
+    case 'unsetSearching':
+      return { ...state, searching: false };
     case 'setSearchResult': {
       return { ...state, searchResult: action.payload };
     }

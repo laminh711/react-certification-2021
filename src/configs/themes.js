@@ -7,6 +7,7 @@ const themes = {
     btnBgHover: '#5f7f8d',
     btnTxt: '#2f3e46',
     text: '#2f3e46',
+    errText: '#ff2e2e',
   },
   dark: {
     name: 'dark',
@@ -16,6 +17,7 @@ const themes = {
     btnBgHover: '#171f23',
     btnTxt: '#dedede',
     text: '#dedede',
+    errText: '#ff2e2e',
   },
 };
 

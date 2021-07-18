@@ -5,16 +5,20 @@ import {
   StyledLoginForm,
   LoginFormLabel,
   LoginFormActionSection,
+  LoginFormError,
+  LoginFormErrorText,
 } from './LoginForm.styled';
 import Button from '../Button';
 import { GlobalContext } from '../../contexts/GlobalContextProvider';
 import useRequest from '../../clients/useRequest';
 import loginApi from '../../clients/login-api';
 import { notEmpty } from '../../utils/typeHelper';
+import Loading from '../Loading';
 
 export default function LoginForm() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [isAfterClickLogin, setIsAfterClickLogin] = useState(false);
   const [, dispatch] = useContext(GlobalContext);
 
   const { requestState, handleFetchPromise } = useRequest();
@@ -22,11 +26,15 @@ export default function LoginForm() {
   const onSubmit = (e) => {
     e.preventDefault();
     handleFetchPromise(loginApi(username, password));
+    setIsAfterClickLogin(true);
   };
 
   useEffect(() => {
-    if (!requestState.loading && !notEmpty(requestState.error)) {
-      dispatch({ type: 'setLoggedInUser', payload: requestState.response });
+    if (!requestState.loading) {
+      setIsAfterClickLogin(false);
+      if (!notEmpty(requestState.error)) {
+        dispatch({ type: 'setLoggedInUser', payload: requestState.response });
+      }
     }
   }, [requestState.response]);
 
@@ -36,6 +44,11 @@ export default function LoginForm() {
   const onChangePassword = (e) => {
     setPassword(e.target.value);
   };
+
+  if (isAfterClickLogin && requestState.loading) {
+    return <Loading />;
+  }
+
   return (
     <StyledLoginForm onSubmit={onSubmit}>
       <LoginFormLabel htmlFor="username">
@@ -61,6 +74,11 @@ export default function LoginForm() {
       <LoginFormActionSection>
         <Button type="submit">Login</Button>
       </LoginFormActionSection>
+      {notEmpty(requestState.error) && (
+        <LoginFormError>
+          <LoginFormErrorText>{requestState.error.message}</LoginFormErrorText>
+        </LoginFormError>
+      )}
     </StyledLoginForm>
   );
 }

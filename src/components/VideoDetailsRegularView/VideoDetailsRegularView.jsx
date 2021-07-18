@@ -11,7 +11,7 @@ import {
   standadizeRelatedVideos,
   standadizeSingleVideo,
 } from '../../utils/youtubeDataHelper';
-import AnnounceText from '../AnnounceText';
+import Loading from '../Loading';
 import VideoDetailsView from '../VideoDetailsView';
 
 export default function VideoDetailsRegularView(props) {
@@ -26,11 +26,6 @@ export default function VideoDetailsRegularView(props) {
 
   const getSpecificVideoRequest = useRequest();
   const searchRelatedRequest = useRequest();
-
-  useEffect(() => {
-    getSpecificVideoRequest.handleFetchPromise(youtubeApiGetSpecificVideo(videoId));
-    searchRelatedRequest.handleFetchPromise(youtubeApiSearchRelated(videoId));
-  }, []);
 
   useEffect(() => {
     getSpecificVideoRequest.handleFetchPromise(youtubeApiGetSpecificVideo(videoId));
@@ -64,9 +59,20 @@ export default function VideoDetailsRegularView(props) {
     globalDispatch({ type: 'addToFavourites', payload: videoInfo });
   };
 
+  if (
+    getSpecificVideoRequest.requestState.loading ||
+    searchRelatedRequest.requestState.loading
+  ) {
+    return <Loading />;
+  }
+
+  if (!getSpecificVideoRequest.requestState.loading && !notEmpty(videoInfo)) {
+    return null;
+  }
+
   return (
     <>
-      {notEmpty(videoInfo) ? (
+      {notEmpty(videoInfo) && (
         <VideoDetailsView
           videoId={videoId}
           videoTitle={videoInfo.title}
@@ -78,8 +84,6 @@ export default function VideoDetailsRegularView(props) {
           onClickRemoveFromFavourite={onClickRemoveFromFavourite}
           onClickAddToFavourite={onClickAddToFavourite}
         />
-      ) : (
-        <AnnounceText>The video is unavailable</AnnounceText>
       )}
     </>
   );

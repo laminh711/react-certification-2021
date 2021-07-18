@@ -10,6 +10,7 @@ const initialState = {
   user: initUser,
   isSideMenuOpen: false,
   favourites: lsGetFavouriteList(),
+  searching: false,
 };
 const GlobalContext = createContext(initialState);
 
